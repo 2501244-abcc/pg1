@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ポケモン獲得記録アプリ</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js"></script>
+</head>
+<body>
+
+  <div class="form search-area">
+    <div class="search-options-vertical">
+      <label>
+        <input type="radio" name="searchType" value="name" checked>
+        ポケモン名
+      </label>
+      <label>
+        <input type="radio" name="searchType" value="place">
+        場所
+      </label>
+      <label>
+        <input type="radio" name="searchType" value="weather">
+        天気
+      </label>
+    </div>
+
+    <input type="text" id="searchBox" placeholder="検索">
+  </div>
+
+  <h1>ポケモン獲得記録</h1>
+
+  <div class="form form-row">
+    <input type="text" id="pokemonName" placeholder="ポケモン名">
+    <input type="text" id="place" placeholder="場所">
+    <input type="text" id="weather" placeholder="天気">
+    <button id="addButton">記録する</button>
+  </div>
+
+  <ul id="recordList"></ul>
+
+</body>
+</html>
