@@ -1,4 +1,7 @@
+let records = [];
+
 document.addEventListener("DOMContentLoaded", function () {
+  loadData();
   SearchDisplay();
 
   document.getElementById("addButton").addEventListener("click", InformationRecord);
@@ -10,7 +13,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+function loadData() {
+  let data = localStorage.getItem("pokemonData");
+  if (data) {
+    records = JSON.parse(data);
+  }
+}
+
 function InformationRecord() {
+  console.log("記録ボタンが押されました");
+
   let name = document.getElementById("pokemonName").value;
   let place = document.getElementById("place").value;
   let weather = document.getElementById("weather").value;
@@ -22,26 +34,20 @@ function InformationRecord() {
     return;
   }
 
-  let now = new Date();
-  let date = now.toLocaleString();
+  let record = {
+    name: name,
+    place: place,
+    weather: weather,
+    timeSlot: timeSlot,
+    type: type,
+    date: new Date().toLocaleString()
+  };
 
-  let record =
-    name + "|" +
-    place + "|" +
-    weather + "|" +
-    timeSlot + "|" +
-    type + "|" +
-    date;
+  records.push(record);
 
-  let data = localStorage.getItem("pokemonData");
+  console.log("現在のrecords配列：", records);
 
-  if (data == null || data === "") {
-    data = record;
-  } else {
-    data = data + "\n" + record;
-  }
-
-  localStorage.setItem("pokemonData", data);
+  localStorage.setItem("pokemonData", JSON.stringify(records));
 
   document.getElementById("pokemonName").value = "";
   document.getElementById("place").value = "";
@@ -56,32 +62,20 @@ function SearchDisplay() {
   let list = document.getElementById("recordList");
   list.innerHTML = "";
 
-  let data = localStorage.getItem("pokemonData");
-  if (data == null || data === "") return;
-
   let keyword = document.getElementById("searchBox").value;
   let searchType = document.querySelector(
     "input[name='searchType']:checked"
   ).value;
 
-  let records = data.split("\n");
-
   for (let i = records.length - 1; i >= 0; i--) {
-    let item = records[i].split("|");
-
-    let name = item[0];
-    let place = item[1];
-    let weather = item[2];
-    let timeSlot = item[3];
-    let type = item[4];
-    let date = item[5];
+    let r = records[i];
 
     let target = "";
-    if (searchType === "name") target = name;
-    if (searchType === "place") target = place;
-    if (searchType === "weather") target = weather;
-    if (searchType === "timeSlot") target = timeSlot;
-    if (searchType === "type") target = type;
+    if (searchType === "name") target = r.name;
+    if (searchType === "place") target = r.place;
+    if (searchType === "weather") target = r.weather;
+    if (searchType === "timeSlot") target = r.timeSlot;
+    if (searchType === "type") target = r.type;
 
     if (target.indexOf(keyword) === -1) continue;
 
@@ -89,12 +83,12 @@ function SearchDisplay() {
 
     let text = document.createElement("div");
     text.innerHTML =
-      "<strong>" + name + "</strong><br>" +
-      "場所：" + place + "<br>" +
-      "天気：" + weather + "<br>" +
-      "時間帯：" + timeSlot + "<br>" +
-      "タイプ：" + type +
-      "<div class='date'>" + date + "</div>";
+      "<strong>" + r.name + "</strong><br>" +
+      "場所：" + r.place + "<br>" +
+      "天気：" + r.weather + "<br>" +
+      "時間帯：" + r.timeSlot + "<br>" +
+      "タイプ：" + r.type +
+      "<div class='date'>" + r.date + "</div>";
 
     let deleteButton = document.createElement("button");
     deleteButton.textContent = "削除";
@@ -109,24 +103,11 @@ function SearchDisplay() {
 }
 
 function deleteRecord(index) {
-  let data = localStorage.getItem("pokemonData");
-  if (data == null || data === "") return;
-
-  let records = data.split("\n");
   records.splice(index, 1);
-
-  let newData = "";
-  for (let i = 0; i < records.length; i++) {
-    if (i === 0) {
-      newData = records[i];
-    } else {
-      newData = newData + "\n" + records[i];
-    }
-  }
-
-  localStorage.setItem("pokemonData", newData);
+  localStorage.setItem("pokemonData", JSON.stringify(records));
   SearchDisplay();
 }
+
 
 
 
