@@ -1,7 +1,7 @@
 let records = [];
 
 document.addEventListener("DOMContentLoaded", function () {
-  loadData();
+  loadData(); 
   SearchDisplay();
 
   document.getElementById("addButton").addEventListener("click", InformationRecord);
@@ -14,9 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function loadData() {
-  let data = localStorage.getItem("pokemonData");
-  if (data) {
-    records = JSON.parse(data);
+  let data = localStorage.getItem("myPokemonData");
+  try {
+    records = data ? JSON.parse(data) : [];
+  } catch (e) {
+    console.warn("localStorage が壊れているので初期化します:", e);
+    records = [];
+    localStorage.setItem("myPokemonData", JSON.stringify(records));
   }
 }
 
@@ -47,7 +51,7 @@ function InformationRecord() {
 
   console.log("現在のrecords配列：", records);
 
-  localStorage.setItem("pokemonData", JSON.stringify(records));
+  localStorage.setItem("myPokemonData", JSON.stringify(records));
 
   document.getElementById("pokemonName").value = "";
   document.getElementById("place").value = "";
@@ -104,10 +108,9 @@ function SearchDisplay() {
 
 function deleteRecord(index) {
   records.splice(index, 1);
-  localStorage.setItem("pokemonData", JSON.stringify(records));
+  localStorage.setItem("myPokemonData", JSON.stringify(records));
   SearchDisplay();
 }
-
 
 
 
